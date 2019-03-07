@@ -10,6 +10,8 @@ namespace Shadowsocks.Model
     [Serializable]
     public class Configuration
     {
+        public string version;
+
         public List<Server> configs;
 
         // when strategy is set, index is ignored
@@ -20,8 +22,10 @@ namespace Shadowsocks.Model
         public bool shareOverLan;
         public bool isDefault;
         public int localPort;
+        public bool portableMode = true;
         public string pacUrl;
         public bool useOnlinePac;
+        public bool secureLocalPac = true;
         public bool availabilityStatistics;
         public bool autoCheckUpdate;
         public bool checkPreRelease;
@@ -88,13 +92,17 @@ namespace Shadowsocks.Model
                     configs = new List<Server>()
                     {
                         GetDefaultServer()
-                    }
+                    },
+                    logViewer = new LogViewerConfig(),
+                    proxy = new ProxyConfig(),
+                    hotkey = new HotkeyConfig()
                 };
             }
         }
 
         public static void Save(Configuration config)
         {
+            config.version = UpdateChecker.Version;
             if (config.index >= config.configs.Count)
                 config.index = config.configs.Count - 1;
             if (config.index < -1)
@@ -156,8 +164,8 @@ namespace Shadowsocks.Model
         public static void CheckTimeout(int timeout, int maxTimeout)
         {
             if (timeout <= 0 || timeout > maxTimeout)
-                throw new ArgumentException(string.Format(
-                    I18N.GetString("Timeout is invalid, it should not exceed {0}"), maxTimeout));
+                throw new ArgumentException(
+                    I18N.GetString("Timeout is invalid, it should not exceed {0}", maxTimeout));
         }
     }
 }

@@ -1,4 +1,4 @@
-Shadowsocks for Windows
+<img src="shadowsocks-csharp/Resources/ssw128.png" alt="[logo]" width="48"/> Shadowsocks for Windows
 =======================
 
 [![Build Status]][Appveyor]
@@ -13,10 +13,15 @@ Shadowsocks for Windows
 4. Supports HTTP proxy
 5. Supports server auto switching
 6. Supports UDP relay (see Usage)
+7. Supports plugins
 
 #### Download
 
-Download the [latest release].
+Download the latest release from [release page].
+
+#### Requirements
+
+Microsoft [.NET Framework 4.6.2] or higher, Microsoft [Visual C++ 2015 Redistributable] (x86) .
 
 #### Basic
 
@@ -54,11 +59,17 @@ If you want to manage multiple servers using other tools like SwitchyOmega,
 you can start multiple Shadowsocks instances. To avoid configuration conflicts,
 copy Shadowsocks to a new directory and choose a different local port.
 
+#### Plugins
+
+If you would like to connect to server via a plugin, please set the plugin's
+path (relative or absolute) on Edit Servers form.
+_Note_: Forward Proxy will not be used while a plugin is enabled.
+
 #### Global hotkeys
 
-Hotkeys are NOT registered automatically. You should re-register all hotkeys after
-restarting Shadowsocks. If you are using multiple instances of Shadowsocks,
-you must set different key combination for other instances.
+Hotkeys could be registered automatically on startup.
+If you are using multiple instances of Shadowsocks,
+you must set different key combination for each instance.
 
 ##### How to input?
 
@@ -89,25 +100,42 @@ if you want to deactivate all, please clear all textboxes.
 
 Please visit [Servers] for more information.
 
-#### Portable Mode
+#### Development
 
-If you want to put all temporary files into shadowsocks/temp folder instead of
-system temp folder, create a `shadowsocks_portable_mode.txt` into shadowsocks folder.
-
-#### Develop
-
-[Visual Studio 2015] & [.NET Framework 4.6.2 Developer Pack] are required.
+1. [Visual Studio 2015] & [.NET Framework 4.6.2 Developer Pack] are required.
+2. It is recommended to share your idea on the Issue Board before you start to work,
+especially for feature development.
 
 #### License
 
-GPLv3
+[GPLv3]
+
+#### Open Source Components / Libraries
+
+```
+Caseless.Fody (MIT)    https://github.com/Fody/Caseless
+Costura.Fody (MIT)     https://github.com/Fody/Costura
+Fody (MIT)             https://github.com/Fody/Fody
+GlobalHotKey (GPLv3)   https://github.com/kirmir/GlobalHotKey
+Newtonsoft.Json (MIT)  https://www.newtonsoft.com/json
+StringEx.CS ()         https://github.com/LazyMode/StringEx
+ZXing.Net (Apache 2.0) https://github.com/micjahn/ZXing.Net
+
+libsscrypto (GPLv2)    https://github.com/shadowsocks/libsscrypto
+Privoxy (GPLv2)        https://www.privoxy.org
+Sysproxy ()            https://github.com/Noisyfox/sysproxy
+```
 
 
-[Appveyor]:       https://ci.appveyor.com/project/Noisyfox/shadowsocks-windows
-[Build Status]:   https://ci.appveyor.com/api/projects/status/04idbevayrghcrh7/branch/master?svg=true
-[latest release]: https://github.com/shadowsocks/shadowsocks-csharp/releases
-[GFWList]:        https://github.com/gfwlist/gfwlist
-[Servers]:        https://github.com/shadowsocks/shadowsocks/wiki/Ports-and-Clients#linux--server-side
-[中文说明]:       https://github.com/shadowsocks/shadowsocks-windows/wiki/Shadowsocks-Windows-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E
-[Visual Studio 2015]: https://www.visualstudio.com/downloads/
+
+[Appveyor]:     https://ci.appveyor.com/project/celeron533/shadowsocks-windows
+[Build Status]: https://ci.appveyor.com/api/projects/status/tfw57q6eecippsl5/branch/master?svg=true
+[release page]: https://github.com/shadowsocks/shadowsocks-csharp/releases
+[GFWList]:      https://github.com/gfwlist/gfwlist
+[Servers]:      https://github.com/shadowsocks/shadowsocks/wiki/Ports-and-Clients#linux--server-side
+[中文说明]:     https://github.com/shadowsocks/shadowsocks-windows/wiki/Shadowsocks-Windows-%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E
+[Visual Studio 2015]:   https://www.visualstudio.com/downloads/
+[.NET Framework 4.6.2]: https://www.microsoft.com/en-US/download/details.aspx?id=53344
 [.NET Framework 4.6.2 Developer Pack]: https://www.microsoft.com/download/details.aspx?id=53321
+[Visual C++ 2015 Redistributable]:     https://www.microsoft.com/en-us/download/details.aspx?id=53840
+[GPLv3]:        https://github.com/shadowsocks/shadowsocks-windows/blob/master/LICENSE.txt

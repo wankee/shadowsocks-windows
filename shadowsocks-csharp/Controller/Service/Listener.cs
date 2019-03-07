@@ -46,16 +46,7 @@ namespace Shadowsocks.Controller
         private bool CheckIfPortInUse(int port)
         {
             IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
-            IPEndPoint[] ipEndPoints = ipProperties.GetActiveTcpListeners();
-
-            foreach (IPEndPoint endPoint in ipEndPoints)
-            {
-                if (endPoint.Port == port)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return ipProperties.GetActiveTcpListeners().Any(endPoint => endPoint.Port == port);
         }
 
         public void Start(Configuration config)
@@ -64,7 +55,7 @@ namespace Shadowsocks.Controller
             this._shareOverLAN = config.shareOverLan;
 
             if (CheckIfPortInUse(_config.localPort))
-                throw new Exception(I18N.GetString("Port already in use"));
+                throw new Exception(I18N.GetString("Port {0} already in use", _config.localPort));
 
             try
             {
@@ -84,7 +75,11 @@ namespace Shadowsocks.Controller
                 _tcpSocket.Listen(1024);
 
                 // Start an asynchronous socket to listen for connections.
-                Logging.Info("Shadowsocks started");
+                Logging.Info($"Shadowsocks started ({UpdateChecker.Version})");
+                if (_config.isVerboseLogging)
+                {
+                    Logging.Info(Encryption.EncryptorFactory.DumpRegisteredEncryptor());
+                }
                 _tcpSocket.BeginAccept(new AsyncCallback(AcceptCallback), _tcpSocket);
                 UDPState udpState = new UDPState();
                 udpState.socket = _udpSocket;
@@ -202,6 +197,7 @@ namespace Shadowsocks.Controller
             try
             {
                 int bytesRead = conn.EndReceive(ar);
+                if (bytesRead <= 0) goto Shutdown;
                 foreach (IService service in _services)
                 {
                     if (service.Handle(buf, bytesRead, conn, null))
@@ -209,6 +205,7 @@ namespace Shadowsocks.Controller
                         return;
                     }
                 }
+                Shutdown:
                 // no service found for this
                 if (conn.ProtocolType == ProtocolType.Tcp)
                 {

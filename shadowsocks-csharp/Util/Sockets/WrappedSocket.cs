@@ -21,7 +21,7 @@ namespace Shadowsocks.Util.Sockets
         // Only used during connection and close, so it won't cost too much.
         private SpinLock _socketSyncLock = new SpinLock();
 
-        private volatile bool _disposed;
+        private bool _disposed;
         private bool Connected => _activeSocket != null;
         private Socket _activeSocket;
 
@@ -42,7 +42,10 @@ namespace Shadowsocks.Util.Sockets
             arg.Completed += OnTcpConnectCompleted;
             arg.UserToken = new TcpUserToken(callback, state);
 
-            Socket.ConnectAsync(SocketType.Stream, ProtocolType.Tcp, arg);
+            if(!Socket.ConnectAsync(SocketType.Stream, ProtocolType.Tcp, arg))
+            {
+                OnTcpConnectCompleted(this, arg);
+            }
         }
 
         private class FakeAsyncResult : IAsyncResult
